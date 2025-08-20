@@ -307,6 +307,9 @@ export default function App() {
     } else if (theme === "neon") {
       root.classList.add("neon");
     }
+    
+    // Force a re-render to apply theme changes
+    root.style.setProperty('--theme-applied', Date.now().toString());
   }, [theme]);
   useEffect(() => {
     localStorage.setItem("tab", activeTab);
@@ -694,7 +697,7 @@ export default function App() {
                 "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1200&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1482192505345-5655af888cc4?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?q=80&w=1200&auto=format&fit=crop",
               ].map((src) => (

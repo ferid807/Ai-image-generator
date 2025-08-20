@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Global theme variables and base styles */
 :root {
@@ -14,10 +16,20 @@
   --bg-filter: brightness(0.55) saturate(1.1);
 }
 .neon {
-  --panel-bg: rgba(0, 20, 40, 0.7);
-  --panel-border: rgba(0, 255, 255, 0.3);
+  --panel-bg: rgba(0, 20, 40, 0.8);
+  --panel-border: rgba(0, 255, 255, 0.4);
   --text-color: rgb(0, 255, 255);
-  --bg-filter: brightness(0.4) saturate(1.8) hue-rotate(180deg);
+  --bg-filter: brightness(0.3) saturate(2) hue-rotate(180deg) contrast(1.2);
+}
+
+.neon .themed-field {
+  background: rgba(0, 20, 40, 0.9);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  color: rgb(0, 255, 255);
+}
+
+.neon .themed-field::placeholder {
+  color: rgba(0, 255, 255, 0.6);
 }
 
 html, body, #root {
@@ -34,7 +46,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?q=80&w=2126&auto=format&fit=crop&ixlib=rb-4.0.3');
+  background-image: url('https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
