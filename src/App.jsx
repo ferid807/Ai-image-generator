@@ -131,6 +131,7 @@ const LOCALES = {
     light: "Light",
     dark: "Dark",
     system: "System",
+    neon: "Neon",
     backendWarning: "Backend not connected — this is a frontend-only preview.",
     placeholderPrompt: "ultra-detailed portrait of a cyberpunk fox, neon bokeh, 85mm, film grain",
     placeholderNegative: "blurry, watermark, lowres, oversaturated",
@@ -183,6 +184,7 @@ const LOCALES = {
     light: "Açıq",
     dark: "Tünd",
     system: "Sistem",
+    neon: "Neon",
     backendWarning: "Backend qoşulmayıb — bu yalnız frontend önizləməsidir.",
     placeholderPrompt: "kibərpank tülkünün ultra-detal portreti, neon bokeh, 85mm, film taxılı",
     placeholderNegative: "bulanıq, filigran, aşağı keyfiyyət, çox doymuş",
@@ -295,8 +297,16 @@ export default function App() {
     localStorage.setItem("theme", theme);
     const root = document.documentElement;
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const dark = theme === "dark" || (theme === "system" && prefersDark);
-    root.classList.toggle("dark", dark);
+    
+    // Remove all theme classes first
+    root.classList.remove("dark", "neon");
+    
+    // Apply the appropriate theme class
+    if (theme === "dark" || (theme === "system" && prefersDark)) {
+      root.classList.add("dark");
+    } else if (theme === "neon") {
+      root.classList.add("neon");
+    }
   }, [theme]);
   useEffect(() => {
     localStorage.setItem("tab", activeTab);
@@ -313,7 +323,7 @@ export default function App() {
         inputRef.current?.focus();
       }
       if (e.key.toLowerCase() === "t") {
-        setTheme((prev) => (prev === "dark" ? "light" : prev === "light" ? "system" : "dark"));
+        setTheme((prev) => (prev === "dark" ? "light" : prev === "light" ? "neon" : prev === "neon" ? "system" : "dark"));
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -539,6 +549,7 @@ export default function App() {
                 { value: "system", label: `${T.theme}: ${T.system}` },
                 { value: "light", label: `${T.theme}: ${T.light}` },
                 { value: "dark", label: `${T.theme}: ${T.dark}` },
+                { value: "neon", label: `${T.theme}: Neon` },
               ]}
             />
           </div>
@@ -683,7 +694,7 @@ export default function App() {
                 "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1529245019870-59b249281fd5?q=80&w=1200&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1482192505345-5655af888cc4?q=80&w=1200&auto=format&fit=crop",
                 "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?q=80&w=1200&auto=format&fit=crop",
               ].map((src) => (
