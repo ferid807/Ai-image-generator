@@ -6,7 +6,7 @@ const Button = ({ children, onClick, className = "", disabled }) => (
   <button
     onClick={onClick}
     disabled={disabled}
-    className={`px-4 py-2 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-zinc-900/60 backdrop-blur hover:bg-white dark:hover:bg-zinc-900 transition focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 ${className}`}
+    className={`px-4 py-2 rounded-2xl shadow-sm border border-white/10 bg-white/10 hover:bg-white/20 transition focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 ${className}`}
   >
     {children}
   </button>
@@ -18,7 +18,7 @@ const Input = ({ value, onChange, placeholder = "", className = "", type = "text
     value={value}
     onChange={onChange}
     placeholder={placeholder}
-    className={`w-full px-4 py-3 rounded-2xl border border-white/10 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${className}`}
+    className={`w-full px-4 py-3 rounded-2xl themed-field focus:outline-none focus:ring-2 focus:ring-indigo-500 ${className}`}
   />
 );
 
@@ -28,7 +28,7 @@ const Textarea = ({ value, onChange, placeholder = "", className = "" }) => (
     onChange={onChange}
     placeholder={placeholder}
     rows={4}
-    className={`w-full px-4 py-3 rounded-2xl border border-white/10 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${className}`}
+    className={`w-full px-4 py-3 rounded-2xl themed-field focus:outline-none focus:ring-2 focus:ring-indigo-500 ${className}`}
   />
 );
 
@@ -36,7 +36,7 @@ const Select = ({ options, value, onChange, className = "" }) => (
   <select
     value={value}
     onChange={(e) => onChange(e.target.value)}
-    className={`px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-zinc-900/80 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${className}`}
+    className={`px-3 py-2 rounded-xl themed-field focus:outline-none focus:ring-2 focus:ring-indigo-500 ${className}`}
   >
     {options.map((o) => (
       <option key={o.value} value={o.value}>
@@ -326,6 +326,18 @@ export default function App() {
       inputRef.current?.focus();
       return;
     }
+    // Credit enforcement: free or offline users need credits
+    const unlimited = user && (user.plan === 'standard' || user.plan === 'pro');
+    if (!unlimited) {
+      const current = parseInt(localStorage.getItem('credits')||'0',10);
+      if (current <= 0) {
+        push("No credits left. Buy one-time credit in Pricing.", 'error');
+        setActiveTab('pricing');
+        return;
+      }
+      localStorage.setItem('credits', String(current - 1));
+      setCredits(current - 1);
+    }
     setLoading(true);
     push(T.backendWarning, "info");
 
@@ -364,7 +376,12 @@ export default function App() {
       push("Account created. You are signed in.", "success");
       setActiveTab("generate");
     } catch (e) {
-      push(e.message || 'Registration failed', 'error');
+      // Fallback for GitHub Pages: store locally when server isn't reachable
+      const localUser = { id: Date.now(), email, plan: 'free', credits: 0 };
+      setUser(localUser);
+      localStorage.setItem('user', JSON.stringify(localUser));
+      push("Registered locally (offline mode).", 'info');
+      setActiveTab('generate');
     }
   };
 
@@ -379,7 +396,12 @@ export default function App() {
       push("Signed in.", "success");
       setActiveTab("generate");
     } catch (e) {
-      push(e.message || 'Login failed', 'error');
+      // Offline fallback: accept any email/password and persist locally
+      const localUser = { id: Date.now(), email, plan: 'free', credits: parseInt(localStorage.getItem('credits')||'0',10) };
+      setUser(localUser);
+      localStorage.setItem('user', JSON.stringify(localUser));
+      push('Signed in (offline mode).', 'info');
+      setActiveTab('generate');
     }
   };
 
@@ -412,7 +434,11 @@ export default function App() {
         localStorage.setItem('credits', String(data.credits));
         push("Purchased 1 credit for $0.10.", "success");
       } catch (e) {
-        push(e.message || 'Purchase failed', 'error');
+        // Offline fallback
+        const next = credits + 1;
+        setCredits(next);
+        localStorage.setItem('credits', String(next));
+        push('Credit added (offline mode).', 'info');
       }
       return;
     }
@@ -425,7 +451,11 @@ export default function App() {
       localStorage.setItem('user', JSON.stringify(updated));
       push(`Subscribed to ${plan.name}.`, 'success');
     } catch (e) {
-      push(e.message || 'Subscription failed', 'error');
+      // Offline fallback
+      const updated = { ...user, plan: planKey };
+      setUser(updated);
+      localStorage.setItem('user', JSON.stringify(updated));
+      push(`Subscribed to ${plan.name} (offline mode).`, 'info');
     }
   };
 
