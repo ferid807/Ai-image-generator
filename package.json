@@ -13,6 +13,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
+    "daisyui": "^5.0.50",
     "express": "^4.19.2",
     "framer-motion": "^12.23.12",
     "react": "^19.1.1",
