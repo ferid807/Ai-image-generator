@@ -5,3 +5,10 @@ export default defineConfig({
   base: '/Ai-image-generator/',
   plugins: [react()],
 })
+
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+    autoprefixer: {},
+  },
+}
