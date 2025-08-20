@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+// For GitHub Pages project site at https://<user>.github.io/Ai-image-generator/
 export default defineConfig({
+  base: '/Ai-image-generator/',
   plugins: [react()],
   server: {
     proxy: {
@@ -12,5 +13,8 @@ export default defineConfig({
         secure: false,
       },
     },
+  },
+  build: {
+    outDir: 'docs',
   },
 })
